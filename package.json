@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/unlucio/"
+    "url": "https://github.com/unlucio/MarcoPolo.git"
   },
   "bugs": {
-    "url": "http://github.com/unlucio/"
+    "url": "https://github.com/unlucio/MarcoPolo/issues"
   },
   "keywords": [
     "orientdb"
