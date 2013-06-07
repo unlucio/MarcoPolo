@@ -1,0 +1,32 @@
+{
+  "name": "MarcoPolo",
+  "version": "0.0.1",
+  "description": "Orient DB REST driver",
+  "license": "MIT",
+  "author": "Luciano Colosio <unlucio@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -t 10000 -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unlucio/"
+  },
+  "bugs": {
+    "url": "http://github.com/unlucio/"
+  },
+  "keywords": [
+    "orientdb"
+  ],
+  "dependencies": {
+    "debug": "latest"
+  },
+  "devDependencies": {
+    "mocha": "latest",
+    "dox-foundation": "latest"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  }
+}
