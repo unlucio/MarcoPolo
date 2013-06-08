@@ -89,6 +89,9 @@ module.exports = (function(HttpClient) {
 				case 200:
 					self.handleResposeData(chunks, callback);
 					break;
+				case 201:
+					self.handleResposeData(chunks, callback);
+					break;
 				case 204:
 					callback(null, {
 						result: 1

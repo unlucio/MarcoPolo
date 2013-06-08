@@ -1,1 +1,1 @@
-module.exports = require("./lib/restInterface");
+module.exports = require("./libs/restInterface");

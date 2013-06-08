@@ -1,6 +1,7 @@
 var assert = require("assert"),
 	RestInterface = require('../libs/restInterface');
 
+
 describe('Orient REST interface Object', function() {
 	describe('Fetch Plans', function() {
 
@@ -102,28 +103,50 @@ describe('Orient REST interface Object', function() {
 			});
 		});
 
-		it("Can delete database", function(done){
-			var oriendDB = new RestInterface({database:{name: 'dummy1'}});
-			oriendDB.deleteDb(function(error, result){
+		it("Can delete database", function(done) {
+			var oriendDB = new RestInterface({
+				database: {
+					name: 'dummy1'
+				}
+			});
+			oriendDB.deleteDb(function(error, result) {
 				if (error === null) {
 					done();
-				}
-				else {
+				} else {
 					done(error);
 				}
 			});
 		});
-		it("Create a new Db if not accessible", function(done){
-			var oriendDB = new RestInterface({database:{name: 'dummy2'}});
-			oriendDB.createIfNotAccess(function(result){
+		it("Create a new Db if not accessible", function(done) {
+			var oriendDB = new RestInterface({
+				database: {
+					name: 'dummy2'
+				}
+			});
+			oriendDB.createIfNotAccess(function(result) {
 				if (result) {
 					done();
 					oriendDB.deleteDb();
-				}
-				else {
+				} else {
 					var error = new Error("Cannot create required DB");
 					done(error);
 				}
+			});
+		});
+	});
+
+	describe('Command: /document/', function() {
+		it("Save object to db", function(done) {
+			var oriendDB = new RestInterface();
+			var dummyObject = {
+				"@type": 'd',
+				prop: "propValue",
+				otherProp: "overValue"
+			};
+			oriendDB.saveDocument(dummyObject, function(error, result) {
+				console.log("Error: ", error);
+				console.log("Result: ", result);
+				done();
 			});
 		});
 	});

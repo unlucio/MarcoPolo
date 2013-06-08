@@ -38,6 +38,8 @@ module.exports = (function(RestInterface) {
 	};
 
 	RestInterface.prototype = {
+
+		/* Databse commands */
 		getDb: function(callback) {
 			var hClient = new HttpClient();
 			hClient.get("/database/" + this.confData.database.name, function(error, result) {
@@ -78,14 +80,15 @@ module.exports = (function(RestInterface) {
 						callback(error, result);
 					}
 				});
-			}
-			else {
+			} else {
 				if (typeof callback === 'function') {
-					callback({error: "db name cannot be null"});
+					callback({
+						error: "db name cannot be null"
+					});
 				}
 			}
 		},
-		createIfNotAccess: function(callback){
+		createIfNotAccess: function(callback) {
 			var self = this;
 
 			this.canAccessDb(function(result){
@@ -102,25 +105,52 @@ module.exports = (function(RestInterface) {
 					});
 				}
 				else{
-					callback();
+					callback(true);
 				}
 			});
 		},
-		deleteDb: function (callback){
-			var hClient = new HttpClient({auth: "root:"+this.confData.server.rootPassword});
+		deleteDb: function(callback) {
+			var hClient = new HttpClient({
+				auth: "root:" + this.confData.server.rootPassword
+			});
 
-			hClient.delete("/database/"+this.confData.database.name, function(error, result) {
+			hClient.delete("/database/" + this.confData.database.name, function(error, result) {
 				if (error === null && typeof result === 'object' && result.result === 1) {
 					if (typeof callback === 'function') {
 						callback(null, true);
 					}
 				} else {
-					var err = new Error("Cannot delete database (error: "+JSON.stringify(error)+")");
+					var err = new Error("Cannot delete database (error: " + JSON.stringify(error) + ")");
 					if (typeof callback === 'function') {
 						callback(err);
 					}
 				}
 			});
+		},
+			/* Document commands */
+		saveDocument: function(object, callback){
+			var hClient = new HttpClient();
+			var endpoint = "/document/" + this.confData.database.name + "/";
+			var requestOptions = {
+				endPoint: endpoint,
+				data: object
+			};
+
+			hClient.post(requestOptions, function(error, result) {
+				callback(error, result);
+			});
+		},
+		getDocument: function(options, callback) {
+			var objRid = options.rid || null;
+			var fetchPlan = this.evalFetchPlan(options.fetchPlan || "shallow");
+			if (objRid === null) {
+				callback(new Error("Document fetching needs a valid object RID"));
+			} else {
+				var endPoint = "/document/" + this.confData.database.name + "/" + objRid + "/" + fetchPlan;
+
+				var hClient = new HttpClient();
+				hClient.get(endPoint, callback);
+			}
 		},
 
 		evalFetchPlan: function(planDettails) {
@@ -163,7 +193,7 @@ module.exports = (function(RestInterface) {
 					break;
 			}
 			return planString;
-		},
+		}
 	};
 
 	return RestInterface;
