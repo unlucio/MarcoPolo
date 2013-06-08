@@ -144,9 +144,13 @@ describe('Orient REST interface Object', function() {
 				otherProp: "overValue"
 			};
 			oriendDB.saveDocument(dummyObject, function(error, result) {
-				console.log("Error: ", error);
 				console.log("Result: ", result);
-				done();
+				if (error === null && typeof result["@rid"] === "string" ) {
+					done();
+				}
+				else {
+					done(new Error("Cannot save object ("+error+")"));
+				}
 			});
 		});
 	});
