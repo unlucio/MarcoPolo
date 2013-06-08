@@ -33,6 +33,7 @@ module.exports = (function(HttpClient) {
 			this.connect(method, endPoint, data, callback);
 		},
 		get: function(endPoint, callback) {
+			//console.log("GET");
 			var options = {
 				method: "GET",
 				endPoint: endPoint
@@ -40,6 +41,7 @@ module.exports = (function(HttpClient) {
 			this.request(options, callback);
 		},
 		post: function(options, callback) {
+			//console.log("POST");
 			options.method = "POST";
 			if (options.data !== null && options.data !== undefined) {
 				options.data = JSON.stringify(options.data);
@@ -50,6 +52,7 @@ module.exports = (function(HttpClient) {
 			this.request(options, callback);
 		},
 		put: function(options, callback) {
+			//console.log("PUT");
 			options.method = "PUT";
 			if (options.data !== null && options.data !== undefined) {
 				options.data = JSON.stringify(options.data);
@@ -60,6 +63,7 @@ module.exports = (function(HttpClient) {
 			this.request(options, callback);
 		},
 		delete: function(endPoint, callback) {
+			//console.log("DELETE");
 			var options = {
 				method: "DELETE",
 				endPoint: endPoint
@@ -73,10 +77,16 @@ module.exports = (function(HttpClient) {
 					callback(null, objectData);
 				}
 			} else {
-				console.log("NOT A JSON RESPONSE: ", data);
-				this.handleError(data, callback);
+				//console.log("NOT A JSON RESPONSE: ", data);
+				this.handlePlainTextRespose(data, callback);
 			}
 		},
+		handlePlainTextRespose: function(data, callback) {
+			if (typeof callback === "function") {
+				callback(null, data);
+			}
+		},
+
 		handleResponse: function(response, callback) {
 			var self = this;
 			var chunks = "";
@@ -85,27 +95,28 @@ module.exports = (function(HttpClient) {
 			});
 
 			response.on("end", function() {
+				//console.log("Status code: ", response.statusCode);
 				switch (response.statusCode) {
-				case 200:
-					self.handleResposeData(chunks, callback);
-					break;
-				case 201:
-					self.handleResposeData(chunks, callback);
-					break;
-				case 204:
-					callback(null, {
-						result: 1
-					});
-					break;
-				case 401:
-					self.handleError({
-						error: "Unauthorized"
-					}, callback);
-					break;
-				default:
-					console.log("response.statusCode ", response.statusCode);
-					self.handleError(chunks, callback);
-					break;
+					case 200: // ok
+						self.handleResposeData(chunks, callback);
+						break;
+					case 201: // created
+						self.handleResposeData(chunks, callback);
+						break;
+					case 204: // ok, no content to return
+						callback(null, {
+							result: 1
+						});
+						break;
+					case 401:
+						self.handleError({
+							error: "Unauthorized"
+						}, callback);
+						break;
+					default:
+						console.log("response.statusCode ", response.statusCode);
+						self.handleError(chunks, callback);
+						break;
 				}
 			});
 		},
@@ -122,7 +133,10 @@ module.exports = (function(HttpClient) {
 			callConfing.method = method;
 			callConfing.path = endPoint;
 
-			//console.log("Running request: ", callConfing);
+			/*if (method === 'PUT') {
+				console.log("Running request: ", callConfing);
+			}*/
+
 
 			var request = http.request(callConfing, function(response) {
 				self.handleResponse(response, callback);
