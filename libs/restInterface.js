@@ -3,6 +3,7 @@
 var HttpClient = require('./httpClient'),
 	util = require('util'),
 	databaseCommands = require("./commands/database"),
+	classCommands = require("./commands/class"),
 	documentCommands = require("./commands/document");
 
 function importMethods(target, module) {
@@ -91,6 +92,7 @@ module.exports = (function (RestInterface) {
 
 	importMethods(RestInterface.prototype, databaseCommands);
 	importMethods(RestInterface.prototype, documentCommands);
+	importMethods(RestInterface.prototype, classCommands);
 
 	return RestInterface;
 }());

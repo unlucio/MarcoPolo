@@ -67,5 +67,5 @@ module.exports = {
 				callback(new Error("This is not an OriendDB Object"));
 			}
 		}
-	},
+	}
 };
