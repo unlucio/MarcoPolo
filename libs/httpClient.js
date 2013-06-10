@@ -146,6 +146,8 @@ module.exports = (function (HttpClient) {
 				console.log("Running request: ", callConfing);
 			}*/
 
+			//console.log("Running request: ", callConfing);
+
 
 			var request = http.request(callConfing, function (response) {
 				self.handleResponse(response, callback);

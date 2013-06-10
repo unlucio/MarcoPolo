@@ -1,15 +1,37 @@
+/**
+ * Oriend DB REST Driver for node.js
+ *
+ * Examples:
+ *
+ *     var orientDB = new RestInterface();
+ *
+ * @options {Object}
+ * @api public
+ */
+
 "use strict";
 
 var HttpClient = require('./httpClient'),
-	util = require('util'),
-	databaseCommands = require("./commands/database"),
-	classCommands = require("./commands/class"),
-	documentCommands = require("./commands/document");
+	util = require('util');
 
-function importMethods(target, module) {
-	for (var methodName in module) {
-		var method = module[methodName];
-		target[methodName] = method;
+var modulesList = [
+	require("./commands/database"),
+	require("./commands/class"),
+	require("./commands/document"),
+	require("./commands/cluster"),
+	require("./commands/command"),
+	require("./commands/query"),
+	require("./commands/server"),
+	require("./commands/batch")
+];
+
+function importModules(modulesLIst, target) {
+	for (var moduleIndex in modulesList) {
+		var selectedModule = modulesList[moduleIndex];
+		for (var methodName in selectedModule) {
+			var method = selectedModule[methodName];
+			target[methodName] = method;
+		}
 	}
 }
 
@@ -90,9 +112,7 @@ module.exports = (function (RestInterface) {
 		}
 	};
 
-	importMethods(RestInterface.prototype, databaseCommands);
-	importMethods(RestInterface.prototype, documentCommands);
-	importMethods(RestInterface.prototype, classCommands);
+	importModules(modulesList, RestInterface.prototype);
 
 	return RestInterface;
 }());
